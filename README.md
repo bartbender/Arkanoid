@@ -52,8 +52,20 @@ No se requiere instalación adicional. Simplemente descarga el proyecto y abre `
 - `arkanoid-project/src/brick.js`: Maneja la creación y el estado de los ladrillos.
 - `arkanoid-project/src/audio.js`: Gestiona los efectos de sonido del juego.
 
+## Propósito Educativo
+
+Este proyecto ha sido creado con la intención de formar a niños de colegios e institutos en JavaScript. A través del desarrollo y la modificación de este juego, los estudiantes pueden aprender conceptos fundamentales de programación, como la manipulación del DOM, el manejo de eventos y la lógica de juego.
+
+## Dedicado a
+
+Este proyecto está dedicado a mis sobrinos Dani, Luci, Rubén y Jorge.
+
 ## Licencia
 
 Este proyecto está licenciado bajo la Licencia Pública General de GNU versión 3. Puedes encontrar más detalles en los archivos [LICENSE](LICENSE) y [LICENSE_ES](LICENSE_ES).
+
+## Captura de Pantalla
+
+![Captura de Pantalla](screenshoot.png)
 
 ¡Diviértete jugando!
