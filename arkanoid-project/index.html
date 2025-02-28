@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arkanoid</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            margin: 0; /* Elimina los márgenes del body */
+            overflow: hidden; /* Oculta las barras de desplazamiento */
+        }
+        canvas {
+            background-color: #eee;
+            display: block; /* Elimina el espacio extra debajo del canvas */
+            margin: 0 auto; /* Centra el canvas horizontalmente */
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    <script type="module" src="src/arkanoid.js"></script>
+</body>
+</html>
