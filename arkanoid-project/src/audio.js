@@ -11,6 +11,19 @@ class AudioManager {
         };
     }
 
+    /**
+     * Reproduce un sonido específico.
+     *
+     *    1.- Verifica si el sonido especificado existe en el objeto `sounds`.
+     *    2.- Si el sonido existe, reinicia el tiempo de reproducción a 0.
+     *    3.- Reproduce el sonido.
+     * 
+     * @param {string} sound El nombre del sonido a reproducir.
+     * @throws {Error} Si el sonido especificado no existe en el objeto `sounds`.
+     * @example
+     *   Ejemplo de uso:
+     *   player.play('alerta'); // Reproduce el sonido 'alerta'
+     */
     play(sound) {
         if (this.sounds[sound]) {
             this.sounds[sound].currentTime = 0; // Reiniciar el sonido si ya se está reproduciendo
