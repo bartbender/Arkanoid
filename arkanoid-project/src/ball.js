@@ -1,12 +1,13 @@
 class Ball {
-    constructor(x, y, radius, dx, dy, audioManager) {
+    constructor(x, y, radius, dx, dy, audioManager, speed = 4) {
         this.x = x;
         this.y = y;
         this.radius = radius;
-        this.dx = dx * 1.5;
-        this.dy = dy * 1.5;
+        this.dx = dx * speed;
+        this.dy = dy * speed;
         this.audioManager = audioManager;
         this.paused = true; // Estado de pausa
+        this.speed = speed; // Velocidad de la bola
     }
 
     draw(context) {
@@ -51,6 +52,12 @@ class Ball {
 
         // Detectar colisiones con el paddle
         if (this.y + this.radius > paddle.y && this.x > paddle.x && this.x < paddle.x + paddle.width) {
+            const hitPosition = (this.x - paddle.x) / paddle.width;
+            if (hitPosition < 0.3) {
+                this.dx = -Math.abs(this.dx); // Rebota a la izquierda
+            } else if (hitPosition > 0.7) {
+                this.dx = Math.abs(this.dx); // Rebota a la derecha
+            }
             this.dy = -this.dy;
             this.audioManager.play('paddleHit');
         }
@@ -59,8 +66,8 @@ class Ball {
     reset(paddle) {
         this.x = paddle.x + paddle.width / 2;
         this.y = paddle.y - this.radius;
-        this.dx = 2;
-        this.dy = -2;
+        this.dx = this.speed;
+        this.dy = -this.speed;
         this.paused = true;
     }
 

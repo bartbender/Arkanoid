@@ -17,10 +17,14 @@ let lives = 3;
 let points = 0;
 
 function init() {
-    resizeCanvas(); // Establecer el tamaño inicial del canvas
-    ball = new Ball(gameArea.x + gameArea.width / 2, gameArea.y + gameArea.height - 30, 10, 2, -2, audioManager);
+    
     paddle = new Paddle(gameArea.x + (gameArea.width - 75) / 2, gameArea.y + gameArea.height - 10, 75, 10);
+    ball = new Ball(gameArea.x + gameArea.width / 2, gameArea.y + gameArea.height - 30, 10, 2, -2, audioManager);
+    
+    resizeCanvas(); // Establecer el tamaño inicial del canvas
     createBricks(); // Crear los ladrillos
+    adjustPaddlePosition(); // Ajustar la posición del paddle
+    ball.reset(paddle); // Establecer la posición inicial de la bola
     document.addEventListener('mousemove', mouseMoveHandler, false);
     document.addEventListener('click', mouseClickHandler, false);
     document.addEventListener('keydown', keyDownHandler, false);
@@ -31,9 +35,9 @@ function init() {
     canvas.addEventListener('touchstart', touchStartHandler, false);
     canvas.addEventListener('touchmove', touchMoveHandler, false);
     canvas.addEventListener('touchend', touchEndHandler, false);
-
+    
     // Usar requestAnimationFrame en lugar de setInterval
-    function gameLoop() {
+    function gameLoop() {        
         draw();
         requestAnimationFrame(gameLoop);
     }
@@ -43,18 +47,23 @@ function init() {
 function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    gameArea.width = canvas.width * 0.8; // Ajustar el ancho del área de juego al 80% del ancho del canvas
+    gameArea.height = canvas.height * 0.8; // Ajustar la altura del área de juego al 80% de la altura del canvas
     gameArea.x = (canvas.width - gameArea.width) / 2;
     gameArea.y = (canvas.height - gameArea.height) / 2;
+    createBricks(); // Reposicionar los ladrillos al redimensionar el canvas
+    adjustPaddlePosition(); // Ajustar la posición del paddle
 }
 
 function createBricks() {
+    bricks = []; // Limpiar los ladrillos existentes
     const rowCount = 5;
     const columnCount = 8;
-    const brickWidth = 75;
-    const brickHeight = 20;
     const padding = 10;
     const offsetTop = 30;
     const offsetLeft = 30;
+    const brickWidth = (gameArea.width - (offsetLeft * 2) - (padding * (columnCount - 1))) / columnCount; // Ajustar el ancho de los ladrillos
+    const brickHeight = 20;
 
     for (let row = 0; row < rowCount; row++) {
         for (let col = 0; col < columnCount; col++) {
@@ -64,6 +73,11 @@ function createBricks() {
             bricks.push(new Brick(x, y, brickWidth, brickHeight, hits));
         }
     }
+}
+
+function adjustPaddlePosition() {
+    // Ajustar la posición del paddle para que se mantenga dentro del área de juego
+    paddle.y = gameArea.y + gameArea.height - paddle.height - 5; // 5 píxeles de margen inferior
 }
 
 function draw() {
@@ -130,6 +144,9 @@ function mouseMoveHandler(e) {
     let relativeX = e.clientX - canvas.offsetLeft;
     if (relativeX > gameArea.x && relativeX < gameArea.x + gameArea.width) {
         paddle.x = relativeX - paddle.width / 2;
+        if (ball.paused) {
+            ball.reset(paddle);
+        }
     }
 }
 
@@ -166,6 +183,9 @@ function touchStartHandler(e) {
     let relativeX = touch.clientX - canvas.offsetLeft;
     if (relativeX > gameArea.x && relativeX < gameArea.x + gameArea.width) {
         paddle.x = relativeX - paddle.width / 2;
+        if (ball.paused) {
+            ball.reset(paddle);
+        }
     }
     if (ball.paused) {
         startBall();
@@ -178,6 +198,9 @@ function touchMoveHandler(e) {
     let relativeX = touch.clientX - canvas.offsetLeft;
     if (relativeX > gameArea.x && relativeX < gameArea.x + gameArea.width) {
         paddle.x = relativeX - paddle.width / 2;
+        if (ball.paused) {
+            ball.reset(paddle);
+        }
     }
 }
 
