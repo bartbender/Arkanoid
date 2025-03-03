@@ -15,10 +15,22 @@
             display: block; /* Elimina el espacio extra debajo del canvas */
             margin: 0 auto; /* Centra el canvas horizontalmente */
         }
+        #toggle-sound {
+            position: absolute;
+            top: 500px;
+            left: 10px;
+            padding: 10px;
+            background-color: #0095DD;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <canvas id="gameCanvas"></canvas>
+    <button id="toggle-sound">Sonido On/Off</button>
     <script type="module" src="src/arkanoid.js"></script>
 </body>
 </html>

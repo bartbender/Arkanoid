@@ -210,9 +210,16 @@ document.addEventListener('DOMContentLoaded', () => {
      * drawLives(context, 3); // Dibuja "Vidas: 3" en el canvas.
      */
     function drawLives() {
-        context.font = "16px Arial";
-        context.fillStyle = "#0095DD";
-        context.fillText("Vidas: " + lives, 8, 20);
+        context.font = "20px Arial"; // Aumentar el tamaño de la fuente
+        context.fillStyle = "#FFFFFF"; // Cambiar el color de la fuente a blanco
+        context.strokeStyle = "#0095DD"; // Color del borde
+        context.lineWidth = 2; // Grosor del borde
+        context.beginPath();
+        context.roundRect(5, 5, 150, 30, 10); // Fondo con borde redondeado
+        context.fill();
+        context.stroke();
+        context.fillStyle = "#0095DD"; // Color del texto
+        context.fillText("Vidas: " + lives, 15, 25); // Dibujar el texto
     }
 
     /**
@@ -227,9 +234,16 @@ document.addEventListener('DOMContentLoaded', () => {
      * drawPoints();
      */
     function drawPoints() {
-        context.font = "16px Arial";
-        context.fillStyle = "#0095DD";
-        context.fillText("Puntos: " + points, canvas.width - 100, 20);
+        context.font = "20px Arial"; // Aumentar el tamaño de la fuente
+        context.fillStyle = "#FFFFFF"; // Cambiar el color de la fuente a blanco
+        context.strokeStyle = "#0095DD"; // Color del borde
+        context.lineWidth = 2; // Grosor del borde
+        context.beginPath();
+        context.roundRect(canvas.width - 200, 5, 200, 30, 10); // Fondo con borde redondeado
+        context.fill();
+        context.stroke();
+        context.fillStyle = "#0095DD"; // Color del texto
+        context.fillText("Puntos: " + points, canvas.width - 190, 25); // Dibujar el texto
     }
 
     /**
