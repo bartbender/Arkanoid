@@ -3,39 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arkanoid JS</title>
+    <title>Arkanoid</title>
+    <link rel="stylesheet" href="styles.css">
     <style>
         body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
             margin: 0;
-            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-            background-color: #f0f0f0;
+            overflow: hidden;
         }
-        h1 {
-            color: #0095DD;
-            font-size: 4em;
+        canvas {
+            background-color: #eee;
+            display: block;
+            margin: 0 auto;
         }
-        a {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 1.5em;
-            color: white;
+        #toggle-sound {
+            position: absolute;
+            top: 50px;
+            left: 10px;
+            padding: 10px;
             background-color: #0095DD;
-            text-decoration: none;
+            color: white;
+            border: none;
             border-radius: 5px;
-        }
-        a:hover {
-            background-color: #007bb5;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <h1>Arkanoid JS</h1>
-    <a href="/Arkanoid/arkanoid-project/index.html">Jugar</a>
+    <canvas id="gameCanvas"></canvas>
+    <button id="toggle-sound">Toggle Sound</button>
+    
+    <script type="module" src="src/arkanoid.js"></script>
 </body>
 </html>

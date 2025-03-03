@@ -3,20 +3,22 @@ import Paddle from './paddle.js';
 import Brick from './brick.js';
 import AudioManager from './audio.js';
 
-let canvas = document.getElementById('gameCanvas');
-let context = canvas.getContext('2d');
-let ball, paddle, bricks = [];
-const audioManager = new AudioManager();
-const gameArea = {
-    width: 800,
-    height: 600,
-    x: 0,
-    y: 0
-};
-let lives = 3;
-let points = 0;
+document.addEventListener('DOMContentLoaded', () => {
+    let canvas = document.getElementById('gameCanvas');
+    let context = canvas.getContext('2d');
+    let ball, paddle, bricks = [];
 
-/**
+    const audioManager = new AudioManager();
+    const gameArea = {
+        width: 800,
+        height: 600,
+        x: 0,
+        y: 0
+    };
+    let lives = 3;
+    let points = 0;
+
+    /**
      * Inicializa el juego configurando los elementos principales y los eventos necesarios.
      *
      *    1.- Crea el paddle y la bola con sus posiciones y tamaños iniciales.
@@ -33,34 +35,43 @@ let points = 0;
      * init();
      */
     function init() {
-    
-    paddle = new Paddle(gameArea.x + (gameArea.width - 75) / 2, gameArea.y + gameArea.height - 10, 75, 10);
-    ball = new Ball(gameArea.x + gameArea.width / 2, gameArea.y + gameArea.height - 30, 10, 2, -2, audioManager);
-    
-    resizeCanvas(); // Establecer el tamaño inicial del canvas
-    createBricks(); // Crear los ladrillos
-    adjustPaddlePosition(); // Ajustar la posición del paddle
-    ball.reset(paddle); // Establecer la posición inicial de la bola
-    document.addEventListener('mousemove', mouseMoveHandler, false);
-    document.addEventListener('click', mouseClickHandler, false);
-    document.addEventListener('keydown', keyDownHandler, false);
-    document.addEventListener('keyup', keyUpHandler, false);
-    window.addEventListener('resize', resizeCanvas); // Ajustar el canvas cuando se redimensiona la ventana
+        paddle = new Paddle(gameArea.x + (gameArea.width - 75) / 2, gameArea.y + gameArea.height - 10, 75, 10);
+        ball = new Ball(gameArea.x + gameArea.width / 2, gameArea.y + gameArea.height - 30, 10, 2, -2, audioManager);
 
-    // Añadir eventos de touch
-    canvas.addEventListener('touchstart', touchStartHandler, false);
-    canvas.addEventListener('touchmove', touchMoveHandler, false);
-    canvas.addEventListener('touchend', touchEndHandler, false);
-    
-    // Usar requestAnimationFrame en lugar de setInterval
-    function gameLoop() {        
-        draw();
-        requestAnimationFrame(gameLoop);
+        resizeCanvas(); // Establecer el tamaño inicial del canvas
+        createBricks(); // Crear los ladrillos
+        adjustPaddlePosition(); // Ajustar la posición del paddle
+        ball.reset(paddle); // Establecer la posición inicial de la bola
+        document.addEventListener('mousemove', mouseMoveHandler, false);
+        document.addEventListener('click', mouseClickHandler, false);
+        document.addEventListener('keydown', keyDownHandler, false);
+        document.addEventListener('keyup', keyUpHandler, false);
+        window.addEventListener('resize', resizeCanvas); // Ajustar el canvas cuando se redimensiona la ventana
+
+        // Añadir eventos de touch
+        canvas.addEventListener('touchstart', touchStartHandler, false);
+        canvas.addEventListener('touchmove', touchMoveHandler, false);
+        canvas.addEventListener('touchend', touchEndHandler, false);
+
+        document.getElementById('toggle-sound').addEventListener('click', () => {
+            audioManager.toggleSound();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 's' || e.key === 'S') {
+                audioManager.toggleSound();
+            }
+        });
+
+        // Usar requestAnimationFrame en lugar de setInterval
+        function gameLoop() {        
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+        gameLoop();
     }
-    gameLoop();
-}
 
-/**
+    /**
      * Redimensiona el canvas y ajusta los elementos del área de juego.
      *
      *    1.- Ajusta el ancho del canvas al ancho de la ventana.
@@ -76,17 +87,17 @@ let points = 0;
      * resizeCanvas();
      */
     function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    gameArea.width = canvas.width * 0.8; // Ajustar el ancho del área de juego al 80% del ancho del canvas
-    gameArea.height = canvas.height * 0.8; // Ajustar la altura del área de juego al 80% de la altura del canvas
-    gameArea.x = (canvas.width - gameArea.width) / 2;
-    gameArea.y = (canvas.height - gameArea.height) / 2;
-    createBricks(); // Reposicionar los ladrillos al redimensionar el canvas
-    adjustPaddlePosition(); // Ajustar la posición del paddle
-}
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        gameArea.width = canvas.width * 0.8; // Ajustar el ancho del área de juego al 80% del ancho del canvas
+        gameArea.height = canvas.height * 0.8; // Ajustar la altura del área de juego al 80% de la altura del canvas
+        gameArea.x = (canvas.width - gameArea.width) / 2;
+        gameArea.y = (canvas.height - gameArea.height) / 2;
+        createBricks(); // Reposicionar los ladrillos al redimensionar el canvas
+        adjustPaddlePosition(); // Ajustar la posición del paddle
+    }
 
-/**
+    /**
      * Crea una matriz de ladrillos para el juego.
      *
      *    1.- Inicializa la matriz de ladrillos vacía.
@@ -103,26 +114,26 @@ let points = 0;
      * createBricks();
      */
     function createBricks() {
-    bricks = []; // Limpiar los ladrillos existentes
-    const rowCount = 5;
-    const columnCount = 8;
-    const padding = 10;
-    const offsetTop = 30;
-    const offsetLeft = 30;
-    const brickWidth = (gameArea.width - (offsetLeft * 2) - (padding * (columnCount - 1))) / columnCount; // Ajustar el ancho de los ladrillos
-    const brickHeight = 20;
+        bricks = []; // Limpiar los ladrillos existentes
+        const rowCount = 5;
+        const columnCount = 8;
+        const padding = 10;
+        const offsetTop = 30;
+        const offsetLeft = 30;
+        const brickWidth = (gameArea.width - (offsetLeft * 2) - (padding * (columnCount - 1))) / columnCount; // Ajustar el ancho de los ladrillos
+        const brickHeight = 20;
 
-    for (let row = 0; row < rowCount; row++) {
-        for (let col = 0; col < columnCount; col++) {
-            const x = gameArea.x + col * (brickWidth + padding) + offsetLeft;
-            const y = gameArea.y + row * (brickHeight + padding) + offsetTop;
-            const hits = Math.floor(Math.random() * 5) + 1; // Puntos de impacto aleatorios entre 1 y 5
-            bricks.push(new Brick(x, y, brickWidth, brickHeight, hits));
+        for (let row = 0; row < rowCount; row++) {
+            for (let col = 0; col < columnCount; col++) {
+                const x = gameArea.x + col * (brickWidth + padding) + offsetLeft;
+                const y = gameArea.y + row * (brickHeight + padding) + offsetTop;
+                const hits = Math.floor(Math.random() * 5) + 1; // Puntos de impacto aleatorios entre 1 y 5
+                bricks.push(new Brick(x, y, brickWidth, brickHeight, hits));
+            }
         }
     }
-}
 
-/**
+    /**
      * Ajusta la posición del paddle para mantenerlo dentro del área de juego.
      *
      *    1.- Calcula la nueva posición vertical del paddle.
@@ -134,11 +145,11 @@ let points = 0;
      * adjustPaddlePosition();
      */
     function adjustPaddlePosition() {
-    // Ajustar la posición del paddle para que se mantenga dentro del área de juego
-    paddle.y = gameArea.y + gameArea.height - paddle.height - 5; // 5 píxeles de margen inferior
-}
+        // Ajustar la posición del paddle para que se mantenga dentro del área de juego
+        paddle.y = gameArea.y + gameArea.height - paddle.height - 5; // 5 píxeles de margen inferior
+    }
 
-/**
+    /**
      * Dibuja y actualiza el estado del juego en el canvas.
      *
      *    1.- Limpia el área del canvas.
@@ -157,18 +168,18 @@ let points = 0;
      * draw();
      */
     function draw() {
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    drawGameAreaBorder();
-    drawLives();
-    drawPoints();
-    ball.draw(context);
-    paddle.draw(context);
-    paddle.update(gameArea);
-    bricks.forEach(brick => brick.draw(context));
-    ball.update(gameArea, bricks, paddle, handleBrickHit, handleBallOutOfBounds);
-}
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        drawGameAreaBorder();
+        drawLives();
+        drawPoints();
+        ball.draw(context);
+        paddle.draw(context);
+        paddle.update(gameArea);
+        bricks.forEach(brick => brick.draw(context));
+        ball.update(gameArea, bricks, paddle, handleBrickHit, handleBallOutOfBounds);
+    }
 
-/**
+    /**
      * Dibuja el borde del área de juego.
      *
      *    1.-Establece el color del borde en azul eléctrico.
@@ -181,12 +192,12 @@ let points = 0;
      * drawGameAreaBorder();
      */
     function drawGameAreaBorder() {
-    context.strokeStyle = '#0000FF'; // Color azul eléctrico
-    context.lineWidth = 5;
-    context.strokeRect(gameArea.x, gameArea.y, gameArea.width, gameArea.height);
-}
+        context.strokeStyle = '#0000FF'; // Color azul eléctrico
+        context.lineWidth = 5;
+        context.strokeRect(gameArea.x, gameArea.y, gameArea.width, gameArea.height);
+    }
 
-/**
+    /**
      * Dibuja el número de vidas restantes en el canvas.
      *
      *    1.-Configura la fuente del texto a "16px Arial".
@@ -199,12 +210,12 @@ let points = 0;
      * drawLives(context, 3); // Dibuja "Vidas: 3" en el canvas.
      */
     function drawLives() {
-    context.font = "16px Arial";
-    context.fillStyle = "#0095DD";
-    context.fillText("Vidas: " + lives, 8, 20);
-}
+        context.font = "16px Arial";
+        context.fillStyle = "#0095DD";
+        context.fillText("Vidas: " + lives, 8, 20);
+    }
 
-/**
+    /**
      * Dibuja los puntos en el canvas.
      *
      *    1.- Configura la fuente del texto a "16px Arial".
@@ -216,12 +227,12 @@ let points = 0;
      * drawPoints();
      */
     function drawPoints() {
-    context.font = "16px Arial";
-    context.fillStyle = "#0095DD";
-    context.fillText("Puntos: " + points, canvas.width - 100, 20);
-}
+        context.font = "16px Arial";
+        context.fillStyle = "#0095DD";
+        context.fillText("Puntos: " + points, canvas.width - 100, 20);
+    }
 
-/**
+    /**
      * Maneja el evento de impacto de un ladrillo.
      *
      *    1.- Incrementa los puntos en 25 por cada impacto.
@@ -235,17 +246,17 @@ let points = 0;
      * handleBrickHit();
      */
     function handleBrickHit() {
-    points += 25;
-    if (bricks.every(brick => brick.hits <= 0)) {
-        audioManager.play('levelComplete');
-        setTimeout(() => {
-            createBricks();
-            ball.reset(paddle);
-        }, 3000);
+        points += 25;
+        if (bricks.every(brick => brick.hits <= 0)) {
+            audioManager.play('levelComplete');
+            setTimeout(() => {
+                createBricks();
+                ball.reset(paddle);
+            }, 3000);
+        }
     }
-}
 
-/**
+    /**
      * Maneja el evento cuando la pelota sale de los límites del campo de juego.
      *
      *    1.- Decrementa el número de vidas.
@@ -264,21 +275,21 @@ let points = 0;
      * handleBallOutOfBounds();
      */
     function handleBallOutOfBounds() {
-    lives--;
-    audioManager.play('explosion');
-    if (lives <= 0) {
-        audioManager.play('gameOver');
-        alert("Game Over! Puntos: " + points);
-        document.location.reload();
-    } else {
-        ball.reset(paddle);
-        document.addEventListener('keydown', startBall, { once: true });
-        document.addEventListener('click', startBall, { once: true });
-        document.addEventListener('touchstart', startBall, { once: true });
+        lives--;
+        audioManager.play('explosion');
+        if (lives <= 0) {
+            audioManager.play('gameOver');
+            alert("Game Over! Puntos: " + points);
+            document.location.reload();
+        } else {
+            ball.reset(paddle);
+            document.addEventListener('keydown', startBall, { once: true });
+            document.addEventListener('click', startBall, { once: true });
+            document.addEventListener('touchstart', startBall, { once: true });
+        }
     }
-}
 
-/**
+    /**
      * Inicia el movimiento de la pelota.
      *
      *    1.-Llama al método `start` del objeto `ball` para comenzar su movimiento.
@@ -289,10 +300,10 @@ let points = 0;
      * startBall();
      */
     function startBall() {
-    ball.start();
-}
+        ball.start();
+    }
 
-/**
+    /**
      * Maneja el evento de movimiento del ratón para actualizar la posición de la paleta.
      *
      *    1.- Calcula la posición relativa del ratón respecto al canvas.
@@ -308,16 +319,16 @@ let points = 0;
      * document.addEventListener('mousemove', mouseMoveHandler);
      */
     function mouseMoveHandler(e) {
-    let relativeX = e.clientX - canvas.offsetLeft;
-    if (relativeX > gameArea.x && relativeX < gameArea.x + gameArea.width) {
-        paddle.x = relativeX - paddle.width / 2;
-        if (ball.paused) {
-            ball.reset(paddle);
+        let relativeX = e.clientX - canvas.offsetLeft;
+        if (relativeX > gameArea.x && relativeX < gameArea.x + gameArea.width) {
+            paddle.x = relativeX - paddle.width / 2;
+            if (ball.paused) {
+                ball.reset(paddle);
+            }
         }
     }
-}
 
-/**
+    /**
      * Maneja el evento de clic del ratón.
      *
      *    1.- Verifica si la animación de la pelota está pausada.
@@ -330,12 +341,12 @@ let points = 0;
      * document.addEventListener('click', mouseClickHandler);
      */
     function mouseClickHandler(e) {
-    if (ball.paused) {
-        startBall();
+        if (ball.paused) {
+            startBall();
+        }
     }
-}
 
-/**
+    /**
      * Maneja los eventos de pulsación de teclas para controlar el juego.
      *
      *    1.- Si la tecla presionada es 'Right' o 'ArrowRight', activa el movimiento hacia la derecha del paddle.
@@ -350,18 +361,18 @@ let points = 0;
      * document.addEventListener('keydown', keyDownHandler);
      */
     function keyDownHandler(e) {
-    if (e.key === 'Right' || e.key === 'ArrowRight') {
-        paddle.moveRight = true;
-    } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
-        paddle.moveLeft = true;
-    } else if (e.key === ' ' && ball.paused) {
-        startBall();
-    } else if (e.key === 'Enter' && lives <= 0) {
-        document.location.reload();
+        if (e.key === 'Right' || e.key === 'ArrowRight') {
+            paddle.moveRight = true;
+        } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
+            paddle.moveLeft = true;
+        } else if (e.key === ' ' && ball.paused) {
+            startBall();
+        } else if (e.key === 'Enter' && lives <= 0) {
+            document.location.reload();
+        }
     }
-}
 
-/**
+    /**
      * Maneja el evento de liberación de una tecla.
      *
      *    1.- Verifica si la tecla liberada es 'Right' o 'ArrowRight'.
@@ -376,15 +387,15 @@ let points = 0;
      * document.addEventListener('keyup', keyUpHandler);
      */
     function keyUpHandler(e) {
-    if (e.key === 'Right' || e.key === 'ArrowRight') {
-        paddle.moveRight = false;
-    } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
-        paddle.moveLeft = false;
+        if (e.key === 'Right' || e.key === 'ArrowRight') {
+            paddle.moveRight = false;
+        } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
+            paddle.moveLeft = false;
+        }
     }
-}
 
-// Manejadores de eventos touch
-/**
+    // Manejadores de eventos touch
+    /**
      * Maneja el evento de inicio de toque en la pantalla táctil.
      *
      *    1.-Previene el comportamiento predeterminado del evento táctil.
@@ -401,21 +412,21 @@ let points = 0;
      * document.addEventListener('touchstart', touchStartHandler);
      */
     function touchStartHandler(e) {
-    e.preventDefault();
-    let touch = e.touches[0];
-    let relativeX = touch.clientX - canvas.offsetLeft;
-    if (relativeX > gameArea.x && relativeX < gameArea.x + gameArea.width) {
-        paddle.x = relativeX - paddle.width / 2;
+        e.preventDefault();
+        let touch = e.touches[0];
+        let relativeX = touch.clientX - canvas.offsetLeft;
+        if (relativeX > gameArea.x && relativeX < gameArea.x + gameArea.width) {
+            paddle.x = relativeX - paddle.width / 2;
+            if (ball.paused) {
+                ball.reset(paddle);
+            }
+        }
         if (ball.paused) {
-            ball.reset(paddle);
+            startBall();
         }
     }
-    if (ball.paused) {
-        startBall();
-    }
-}
 
-/**
+    /**
      * Maneja el evento de movimiento táctil para controlar la posición de la paleta.
      *
      *    1.-Previene el comportamiento predeterminado del evento táctil.
@@ -431,18 +442,18 @@ let points = 0;
      * document.addEventListener('touchmove', touchMoveHandler);
      */
     function touchMoveHandler(e) {
-    e.preventDefault();
-    let touch = e.touches[0];
-    let relativeX = touch.clientX - canvas.offsetLeft;
-    if (relativeX > gameArea.x && relativeX < gameArea.x + gameArea.width) {
-        paddle.x = relativeX - paddle.width / 2;
-        if (ball.paused) {
-            ball.reset(paddle);
+        e.preventDefault();
+        let touch = e.touches[0];
+        let relativeX = touch.clientX - canvas.offsetLeft;
+        if (relativeX > gameArea.x && relativeX < gameArea.x + gameArea.width) {
+            paddle.x = relativeX - paddle.width / 2;
+            if (ball.paused) {
+                ball.reset(paddle);
+            }
         }
     }
-}
 
-/**
+    /**
      * Maneja el evento de finalización de un toque en una pantalla táctil.
      *
      *    1.-Previene el comportamiento predeterminado del evento de toque.
@@ -455,8 +466,9 @@ let points = 0;
      * element.addEventListener('touchend', touchEndHandler);
      */
     function touchEndHandler(e) {
-    e.preventDefault();
-    // Lógica para manejar el final del touch si es necesario
-}
+        e.preventDefault();
+        // Lógica para manejar el final del touch si es necesario
+    }
 
-init();
+    init();
+});

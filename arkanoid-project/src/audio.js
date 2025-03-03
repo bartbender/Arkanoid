@@ -9,6 +9,7 @@ class AudioManager {
             gameOver: new Audio('./assets/game_over.wav'),
             levelComplete: new Audio('./assets/level_complete.wav'),
         };
+        this.active = true; // Añadir la propiedad active
     }
 
     /**
@@ -25,10 +26,14 @@ class AudioManager {
      *   player.play('alerta'); // Reproduce el sonido 'alerta'
      */
     play(sound) {
-        if (this.sounds[sound]) {
+        if (this.active && this.sounds[sound]) {
             this.sounds[sound].currentTime = 0; // Reiniciar el sonido si ya se está reproduciendo
             this.sounds[sound].play();
         }
+    }
+
+    toggleSound() {
+        this.active = !this.active;
     }
 }
 
