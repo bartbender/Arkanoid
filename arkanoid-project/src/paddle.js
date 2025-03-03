@@ -27,11 +27,25 @@ class Paddle {
      * rect.draw(context);
      */
     draw(context) {
+        context.save(); // Guardar el estado actual del contexto
+    
+        // Crear un gradiente vertical para el efecto de brillo
+        let gradient = context.createLinearGradient(this.x, this.y, this.x, this.y + this.height);
+        gradient.addColorStop(0, "#0095DD"); // Color del paddle (parte oscura)
+        gradient.addColorStop(1, "#FFFFFF"); // Blanco para el brillo (parte clara)
+    
+        context.fillStyle = gradient;
+        context.shadowColor = "rgba(0, 0, 0, 0.5)"; // Color de la sombra
+        context.shadowBlur = 10; // Desenfoque de la sombra
+        context.shadowOffsetX = 5; // Desplazamiento horizontal de la sombra
+        context.shadowOffsetY = 5; // Desplazamiento vertical de la sombra
+    
         context.beginPath();
         context.rect(this.x, this.y, this.width, this.height);
-        context.fillStyle = "#0095DD";
         context.fill();
         context.closePath();
+    
+        context.restore(); // Restaurar el estado del contexto
     }
 
     /**

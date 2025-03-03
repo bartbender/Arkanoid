@@ -28,11 +28,25 @@ class Brick {
      */
     draw(context) {
         if (this.hits > 0) {
+            context.save(); // Guardar el estado actual del contexto
+
+            // Crear un gradiente para el efecto de brillo
+            let gradient = context.createLinearGradient(this.x, this.y, this.x + this.width, this.y + this.height);
+            gradient.addColorStop(0, "#FFFFFF"); // Blanco para el brillo
+            gradient.addColorStop(1, this.getColor()); // Color del ladrillo
+
+            context.fillStyle = gradient;
+            context.shadowColor = "rgba(0, 0, 0, 0.5)"; // Color de la sombra
+            context.shadowBlur = 10; // Desenfoque de la sombra
+            context.shadowOffsetX = 5; // Desplazamiento horizontal de la sombra
+            context.shadowOffsetY = 5; // Desplazamiento vertical de la sombra
+
             context.beginPath();
             context.rect(this.x, this.y, this.width, this.height);
-            context.fillStyle = this.getColor();
             context.fill();
             context.closePath();
+
+            context.restore(); // Restaurar el estado del contexto
         }
     }
 
@@ -55,7 +69,7 @@ class Brick {
             case 4: return "#FF7F00"; // Naranja
             case 3: return "#FFFF00"; // Amarillo
             case 2: return "#7FFF00"; // Verde
-            case 1: return "#00FF00"; // Verde claro
+            case 1: return "#0000FA"; // Azul
             default: return "#FFFFFF"; // Blanco (no debería ocurrir)
         }
     }

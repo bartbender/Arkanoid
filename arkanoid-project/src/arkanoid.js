@@ -383,7 +383,9 @@ document.addEventListener('DOMContentLoaded', () => {
             startBall();
         } else if (e.key === 'Enter' && lives <= 0) {
             document.location.reload();
-        }
+        } else if(e.key==='s' || e.key==='S') {
+            audioManager.toggleSound();
+        }        
     }
 
     /**
@@ -437,7 +439,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (ball.paused) {
             startBall();
+        }        
+        if (touch.clientX > canvas.width - 50 && touch.clientY < 520 && touch.clientY > 500 ) {
+            audioManager.toggleSound();
         }
+
     }
 
     /**

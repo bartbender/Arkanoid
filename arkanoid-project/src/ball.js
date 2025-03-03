@@ -27,11 +27,25 @@ class Ball {
      * circle.draw(context);
      */
     draw(context) {
+        context.save(); // Guardar el estado actual del contexto
+
+        // Crear un gradiente para el efecto de brillo
+        let gradient = context.createRadialGradient(this.x, this.y, this.radius / 2, this.x, this.y, this.radius);
+        gradient.addColorStop(0, "#41a4e6"); // Blanco para el brillo
+        gradient.addColorStop(1, "#0095DD"); // Color de la pelota
+
+        context.fillStyle = gradient;
+        context.shadowColor = "rgba(0, 0, 0, 0.5)"; // Color de la sombra
+        context.shadowBlur = 10; // Desenfoque de la sombra
+        context.shadowOffsetX = 5; // Desplazamiento horizontal de la sombra
+        context.shadowOffsetY = 5; // Desplazamiento vertical de la sombra
+
         context.beginPath();
         context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        context.fillStyle = "#0095DD";
         context.fill();
         context.closePath();
+
+        context.restore(); // Restaurar el estado del contexto
     }
 
     /**
