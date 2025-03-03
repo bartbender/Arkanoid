@@ -63,6 +63,7 @@ class Ball {
         // Rebotar en los bordes del área de juego
         if (this.x + this.radius > gameArea.x + gameArea.width || this.x - this.radius < gameArea.x) {
             this.dx = -this.dx;
+            this.x = this.x + this.dx; // Evitar que la pelota se quede atascada en los bordes
             this.audioManager.play('wallHit');
         }
         if (this.y - this.radius < gameArea.y) {
